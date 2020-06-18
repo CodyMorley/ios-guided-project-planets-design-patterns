@@ -21,18 +21,19 @@ class PlanetsCollectionViewController: UICollectionViewController {
         return shouldShowPluto ? planetController.planetsWithPluto : planetController.planetsWithoutPluto
     }
     
+    
+    //MARK: - Life Cycles -
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
 		updateViews()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshViews(_:)),
+                                               name: .shouldShowPlutoChanged,
+                                               object: nil)
 	}
 	
-	func updateViews() {
-        collectionView?.reloadData()
-	}
-    
+	
     // MARK: - Navigation
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowSettings" {
 			guard let detailVC = segue.destination as? SettingsViewController else { return }
@@ -52,11 +53,26 @@ class PlanetsCollectionViewController: UICollectionViewController {
         }
     }
 	
+    
+    //MARK: - Actions -
     @IBAction func unwindToPlanetsCollectionViewController(_ sender: UIStoryboardSegue) {
 		// Update the UI if we segue back to this view controller
 		updateViews()
 	}
+    
+    
+    //MARK: - Methods -
+    @objc func refreshViews(_ notification: Notification) {
+        print("notification: \(notification)")
+        updateViews()
+    }
+    
+    func updateViews() {
+        collectionView?.reloadData()
+    }
 }
+
+
 
 // MARK: UICollectionViewDataSource
 extension PlanetsCollectionViewController {
@@ -75,6 +91,8 @@ extension PlanetsCollectionViewController {
     }
 }
 
+
+
 extension PlanetsCollectionViewController: UIPopoverPresentationControllerDelegate {
     // We can "force" an iPhone to display an iPad-like popover by changing the model
 	// presentation style in code.
@@ -82,6 +100,9 @@ extension PlanetsCollectionViewController: UIPopoverPresentationControllerDelega
         return .none
     }
 }
+
+
+
 
 extension PlanetsCollectionViewController: UIAdaptivePresentationControllerDelegate {
 	func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {

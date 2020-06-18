@@ -35,4 +35,14 @@ class PlanetDetailViewController: UIViewController {
         imageView.image = planet.image
         label.text = planet.name
     }
+    
+    
+    //MARK: - State restoration -
+    override func encodeRestorableState(with coder: NSCoder) {
+        <#code#>
+    }
+    
+    override func decodeRestorableState(with coder: NSCoder) {
+        <#code#>
+    }
 }
