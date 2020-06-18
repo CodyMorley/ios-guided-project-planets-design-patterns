@@ -9,6 +9,9 @@
 import UIKit
 
 class PlanetDetailViewController: UIViewController {
+    //MARK: - Properties -
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var label: UILabel!
     
     var planet: Planet? {
         didSet {
@@ -16,15 +19,16 @@ class PlanetDetailViewController: UIViewController {
         }
     }
     
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var label: UILabel!
     
+    //MARK: - Life Cycles -
     override func viewDidLoad() {
         super.viewDidLoad()
         
         updateViews()
     }
     
+    
+    //MARK: - Private Methods -
     private func updateViews() {
         guard let planet = planet, isViewLoaded else {
             imageView?.image = nil
@@ -39,10 +43,17 @@ class PlanetDetailViewController: UIViewController {
     
     //MARK: - State restoration -
     override func encodeRestorableState(with coder: NSCoder) {
-        <#code#>
+        super.encodeRestorableState(with: coder)
+        
+        guard let planet = planet else { return }
+        let planetData = try? PropertyListEncoder().encode(planet)
+        coder.encode(planetData, forKey: "planetData")
     }
     
     override func decodeRestorableState(with coder: NSCoder) {
-        <#code#>
+        super.decodeRestorableState(with: coder)
+        
+        guard let planetData = coder.decodeObject(forKey: "planetData") as? Data else { return }
+        planet = try? PropertyListDecoder().decode(Planet.self, from: planetData)
     }
 }
